@@ -27,7 +27,9 @@ jobs:
 
       - name: Run bot
         env:
-          PO_MODE: paper
-          PO_CONSOLE_LOG: "true"
+  PO_MODE: demo
+  PO_CONSOLE_LOG: "true"
+  PO_SESSION: ${{ secrets.PO_SESSION }}
+  PO_UID: ${{ secrets.PO_UID }}
         run: |
           python -m pocket_signal_bot.runner
