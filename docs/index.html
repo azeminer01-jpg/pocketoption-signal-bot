@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pocket Signal Demo</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0b1020;
+    color:white;
+}
+.container{
+    max-width:500px;
+    margin:auto;
+    padding:18px;
+}
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+.title{
+    font-size:24px;
+    font-weight:bold;
+}
+.demo{
+    background:#26314d;
+    padding:7px 12px;
+    border-radius:20px;
+    font-size:12px;
+}
+.card{
+    background:#151d32;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:14px;
+    border:1px solid #26314d;
+}
+.label{
+    color:#8d98b5;
+    font-size:13px;
+    margin-bottom:7px;
+}
+select,button{
+    width:100%;
+    border:0;
+    border-radius:12px;
+    padding:14px;
+    font-size:16px;
+}
+select{
+    background:#202a43;
+    color:white;
+}
+.row{
+    display:flex;
+    gap:10px;
+}
+.row>*{flex:1}
+.signal{
+    text-align:center;
+    padding:25px 10px;
+    border-radius:16px;
+    background:#202a43;
+}
+.signal-name{
+    font-size:32px;
+    font-weight:bold;
+}
+.wait{color:#ffd166}
+.buy{color:#31e981}
+.sell{color:#ff5c7a}
+.metrics{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+.metric{
+    background:#202a43;
+    padding:13px 5px;
+    text-align:center;
+    border-radius:12px;
+}
+.metric b{
+    display:block;
+    font-size:17px;
+    margin-top:5px;
+}
+button{
+    background:#5865f2;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+.history-item{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid #26314d;
+    font-size:13px;
+}
+.footer{
+    text-align:center;
+    color:#69738e;
+    font-size:11px;
+    margin-top:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+    <div class="title">Pocket Signal</div>
+    <div class="demo">DEMO</div>
+</div>
+
+<div class="card">
+
+<div class="label">VALYUTA</div>
+
+<select id="pair">
+    <option>GBP/USD OTC</option>
+    <option>EUR/USD OTC</option>
+    <option>USD/JPY OTC</option>
+</select>
+
+<br><br>
+
+<div class="label">MÜDDƏT</div>
+
+<div class="row">
+    <button onclick="setTime('30s')">30 SEC</button>
+    <button onclick="setTime('1m')">1 MIN</button>
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="label">SİQNAL</div>
+
+<div class="signal">
+
+<div id="signal" class="signal-name wait">
+    NO TRADE
+</div>
+
+<div id="timer">
+    Hazırlanır...
+</div>
+
+</div>
+
+<br>
+
+<button onclick="generateSignal()">
+    ANALİZ ET
+</button>
+
+</div>
+
+<div class="card">
+
+<div class="label">ANALİZ GÖSTƏRİCİLƏRİ</div>
+
+<div class="metrics">
+
+<div class="metric">
+RSI
+<b id="rsi">--</b>
+</div>
+
+<div class="metric">
+EMA
+<b id="ema">--</b>
+</div>
+
+<div class="metric">
+MOMENTUM
+<b id="momentum">--</b>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="label">SİQNAL TARİXÇƏSİ</div>
+
+<div id="history">
+    Hələ siqnal yoxdur
+</div>
+
+</div>
+
+<div class="footer">
+Bu panel DEMO məqsədlidir. Real ticarət siqnalı və gəlir zəmanəti vermir.
+</div>
+
+</div>
+
+<script>
+
+let selectedTime="30s";
+
+function setTime(time){
+    selectedTime=time;
+}
+
+function random(min,max){
+    return Math.random()*(max-min)+min;
+}
+
+function generateSignal(){
+
+    let rsi=random(25,75);
+    let ema=random(-0.002,0.002);
+    let momentum=random(-0.003,0.003);
+
+    let signal="NO TRADE";
+    let cls="wait";
+
+    if(rsi<35 && momentum>0){
+        signal="BUY";
+        cls="buy";
+    }
+    else if(rsi>65 && momentum<0){
+        signal="SELL";
+        cls="sell";
+    }
+
+    document.getElementById("rsi").innerText=rsi.toFixed(2);
+    document.getElementById("ema").innerText=ema.toFixed(5);
+    document.getElementById("momentum").innerText=momentum.toFixed(5);
+
+    let signalBox=document.getElementById("signal");
+
+    signalBox.innerText=signal;
+    signalBox.className="signal-name "+cls;
+
+    let time=new Date().toLocaleTimeString();
+
+    let history=document.getElementById("history");
+
+    if(history.innerText==="Hələ siqnal yoxdur"){
+        history.innerHTML="";
+    }
+
+    let item=document.createElement("div");
+    item.className="history-item";
+
+    item.innerHTML=
+        "<span>GBP/USD OTC • "+selectedTime+"</span>"+
+        "<b>"+signal+" • "+time+"</b>";
+
+    history.prepend(item);
+}
+
+</script>
+
+</body>
+</html>
