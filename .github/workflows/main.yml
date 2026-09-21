@@ -31,5 +31,7 @@ jobs:
           PO_CONSOLE_LOG: "true"
           PO_SESSION: ${{ secrets.PO_SESSION }}
           PO_UID: ${{ secrets.PO_UID }}
+          PO_USE_WS_QUOTES: ${{ secrets.PO_USE_WS_QUOTES }}
+
         run: |
           python -m pocket_signal_bot.runner
